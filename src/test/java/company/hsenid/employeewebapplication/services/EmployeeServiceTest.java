@@ -5,6 +5,7 @@ import company.hsenid.employeewebapplication.repositories.EmployeeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@AutoConfigureDataMongo
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class EmployeeServiceTest {
@@ -53,7 +55,7 @@ class EmployeeServiceTest {
     @Test
     void FindByName() {
         String Name = "chamud";
-        when(employeeRepository.findEmployeeByFirstname(Name)).thenReturn( Stream.of(
+        when(employeeRepository.findByFirstname(Name)).thenReturn( Stream.of(
                 new Employee("987654321","chamud","patirana")).collect(Collectors.toList()));
 
         assertEquals(1, employeeService.FindByName(Name).size());

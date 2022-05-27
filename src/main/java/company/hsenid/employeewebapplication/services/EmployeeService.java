@@ -49,7 +49,7 @@ public class EmployeeService {
     }
 
     public List<Employee> FindByName(String name){
-        return employeeRepository.findEmployeeByFirstname(name);
+        return employeeRepository.findByFirstname(name);
     }
 
 }

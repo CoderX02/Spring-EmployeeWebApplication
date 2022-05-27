@@ -1,19 +1,28 @@
 package company.hsenid.employeewebapplication.models;
 
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(exclude = {"projects"})
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "Employee" )
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
+
     private String firstname;
     private String lastname;
-    private Set<Project> projects = new HashSet<>();
 
+    public Employee(String firstname, String lastname) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+    }
 }

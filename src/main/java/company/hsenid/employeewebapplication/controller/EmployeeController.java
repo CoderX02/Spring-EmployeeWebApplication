@@ -5,6 +5,8 @@ import company.hsenid.employeewebapplication.models.Employee;
 import company.hsenid.employeewebapplication.models.Project;
 import company.hsenid.employeewebapplication.repositories.EmployeeRepository;
 import company.hsenid.employeewebapplication.repositories.ProjectRepository;
+import company.hsenid.employeewebapplication.services.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,53 +17,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 public class EmployeeController {
 
-    private EmployeeRepository employeeRepository;
-    private ProjectRepository projectRepository;
-
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    @Autowired
+    private EmployeeService employeeService;
 
     @PostMapping("/create")
     public void CreateEmployee(@RequestBody Employee employees){
-        employeeRepository.insert(employees);
+        employeeService.insertEmployee(employees);
     }
 
-    @PostMapping ("/delete/{id}")
+    @PostMapping ("/delete-employee/{id}")
     public void DeleteEmployee(@PathVariable String id){
-        employeeRepository.deleteById(id);
+        employeeService.deleteUser(id);
     }
 
-    @GetMapping("/")
+    @GetMapping("/employee/list")
     public List<Employee> ListEmployees(){
-        return employeeRepository.findAll();
+        return employeeService.fetchAllEmployee();
     }
 
     @RequestMapping(
             method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
             path = "/user/{id}"
     )
-    public ResponseEntity<?> fetchEmployee(@PathVariable String id ) {
-        Optional<Employee> employeesOptional = employeeRepository.findById(id);
-        if(employeesOptional.isPresent()) {
-            return ResponseEntity.ok(employeesOptional.get());
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("employee" + id + " was not found");
+    public ResponseEntity<?> findEmployee(@PathVariable String id ) {
+        return employeeService.fetchEmployee(id);
     }
 
     @PutMapping("/updateEmployee/{id}")
     public ResponseEntity<?> UpdateEmployee(@PathVariable String id, @RequestBody Employee employees) {
-        Optional<Employee> employeesOptional = employeeRepository.findById(id);
-        if(employeesOptional.isPresent()) {
-            employeeRepository.save(EmployeeMapper.employeeMapper(employeesOptional.get(),employees));
-            return ResponseEntity.status(HttpStatus.OK).body("Success");
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("employee" + id + " was not found");
-        }
+        return employeeService.UpdateEmployee(id,employees);
     }
 
 }
